@@ -1,5 +1,6 @@
 {
   inputs = {
+    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     utils.url = "github:numtide/flake-utils";
   };
   outputs = { self, nixpkgs, utils }: utils.lib.eachDefaultSystem (system:
@@ -9,6 +10,8 @@
     {
       devShell = pkgs.mkShell {
         buildInputs = with pkgs; [
+          stylua
+          lua51Packages.luacheck
         ];
       };
     }
