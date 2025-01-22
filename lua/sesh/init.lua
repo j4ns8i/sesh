@@ -33,11 +33,20 @@ function M.setup(opts)
     M.config.session_file = vim.v.this_session
   else
     local session_file = M.get_default_session_file()
-    vim.uv.fs_mkdir(vim.fs.dirname(session_file), 0755)
     M.config.session_file = session_file
   end
 
   M.config = vim.tbl_deep_extend("force", M.config, opts)
+
+  local using_default_session = not using_session_arg and (opts.session_file == nil or opts.session_file == "")
+  if using_default_session then
+    if vim.uv.fs_stat(M.config.session_file) ~= nil then
+      vim.cmd("source " .. vim.fn.fnameescape(M.config.session_file))
+    else
+      local session_dir = vim.fs.dirname(M.config.session_file)
+      vim.uv.fs_mkdir(session_dir, 493)
+    end
+  end
 
   local augroup_id = vim.api.nvim_create_augroup(M.augroup_name(), { clear = true })
   vim.api.nvim_create_autocmd({
@@ -46,17 +55,17 @@ function M.setup(opts)
     "ExitPre",
   }, {
     group = augroup_id,
-    callback = M.save_session()
+    callback = M.save_session,
   })
 end
 
 function M.get_default_session_file()
-  local encoded_pwd = vim.env.PWD:gsub("/", "\\%%")
+  local encoded_pwd = vim.env.PWD:gsub("/", "%%")
   return vim.fn.stdpath("state") .. "/sesh/" .. encoded_pwd .. ".vim"
 end
 
 function M.save_session()
-  vim.cmd("mksession! " .. M.config.session_file)
+  vim.cmd("mksession! " .. vim.fn.fnameescape(M.config.session_file))
 end
 
 return M
