@@ -1,0 +1,4 @@
+- [ ] opt for lazy loading
+- [ ] opt for, if files are provided as arguments, creating session if one doesn't exist
+- [ ] in addition to the above, opt for overwriting previous session
+- [ ] opt for git branch-specific sessions
