@@ -51,7 +51,6 @@ function M.toggle()
 end
 
 function M.save_session()
-  print("saving session " .. vim.fn.fnameescape(M.config.session_file) .. " at " .. os.date())
   vim.cmd("mksession! " .. vim.fn.fnameescape(M.config.session_file))
 end
 
