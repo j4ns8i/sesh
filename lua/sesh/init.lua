@@ -24,12 +24,12 @@ function M.get_session_file()
   return M.config.session_file
 end
 
-function M.disable()
+function M.deactivate()
   vim.api.nvim_del_augroup_by_name(M.augroup_name)
   set_g("enabled", false)
 end
 
-function M.enable()
+function M.activate()
   local augroup_id = vim.api.nvim_create_augroup(M.augroup_name, { clear = true })
   vim.api.nvim_create_autocmd({
     "BufAdd", "BufDelete",
@@ -44,9 +44,9 @@ end
 
 function M.toggle()
   if get_g("enabled") then
-    M.disable()
+    M.deactivate()
   else
-    M.enable()
+    M.activate()
   end
 end
 
@@ -67,8 +67,8 @@ M.augroup_name = "Sesh"
 
 local function create_user_commands()
   vim.api.nvim_create_user_command("SeshFile", function() print(M.get_session_file()) end, { nargs = 0 })
-  vim.api.nvim_create_user_command("SeshDisable", M.disable, { nargs = 0 })
-  vim.api.nvim_create_user_command("SeshEnable", M.enable, { nargs = 0 })
+  vim.api.nvim_create_user_command("SeshDeactivate", M.deactivate, { nargs = 0 })
+  vim.api.nvim_create_user_command("SeshActivate", M.activate, { nargs = 0 })
   vim.api.nvim_create_user_command("SeshToggle", M.toggle, { nargs = 0 })
 end
 
@@ -105,7 +105,7 @@ local function init(opts)
   end
 
   create_user_commands()
-  M.enable()
+  M.activate()
 end
 
 ---@param opts Config
