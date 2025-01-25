@@ -125,6 +125,7 @@ function M.setup(opts)
       callback = function()
         init(opts)
       end,
+      nested = true,
     })
   end
 end
